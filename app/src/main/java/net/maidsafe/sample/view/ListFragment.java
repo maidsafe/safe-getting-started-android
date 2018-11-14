@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +106,22 @@ public class ListFragment extends Fragment {
         Button addNewTask = dialogView.findViewById(R.id.addNewTask);
         Button cancelAddTask = dialogView.findViewById(R.id.cancelAddTask);
 
+        newTaskText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                addNewTask.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         cancelAddTask.setOnClickListener(view -> dialogBuilder.dismiss());
         addNewTask.setOnClickListener(view -> {
             String taskText = newTaskText.getText().toString();

@@ -1,6 +1,8 @@
 package net.maidsafe.sample.services;
 
+import android.content.Context;
 import android.net.Uri;
+import android.widget.Toast;
 
 import net.maidsafe.api.Client;
 import net.maidsafe.api.model.App;
@@ -10,6 +12,7 @@ import net.maidsafe.safe_app.AuthReq;
 import net.maidsafe.safe_app.ContainerPermissions;
 import net.maidsafe.safe_app.MDataEntry;
 import net.maidsafe.safe_app.MDataInfo;
+import net.maidsafe.sample.R;
 import net.maidsafe.sample.model.Task;
 import net.maidsafe.sample.model.TodoList;
 
@@ -24,18 +27,22 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
     private MDataInfo appData;
     final App app = new App("net.maidsafe.sample", "Safe TODO Java",
                           "Maidsafe.net", "0.1.0");
-    private OnDisconnected disconectedListner;
+    private OnDisconnected onDisconnected;
 
     @Override
     public void disconnected(Object o) {
-        if (disconectedListner == null) {
+        if (onDisconnected == null) {
             return;
         }
-        disconectedListner.onDisconnected();
+        onDisconnected.onDisconnected();
     }
 
-    public SafeTodoService() {
-        api = SafeApi.getInstance();
+    public SafeTodoService(Context context) {
+        try {
+            api = SafeApi.getInstance(context);
+        } catch (Exception e) {
+            Toast.makeText(context, context.getText(R.string.init_error), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -56,7 +63,7 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
     @Override
     public void connect(Uri authResponse, OnDisconnected disconnected) throws Exception {
         String response = authResponse.toString().replaceAll(".*\\/+", "");
-        disconectedListner = disconnected;
+        onDisconnected = disconnected;
         api.connect(response, app.getId(), this);
     }
 

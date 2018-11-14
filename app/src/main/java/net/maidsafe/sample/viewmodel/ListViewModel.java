@@ -1,5 +1,7 @@
 package net.maidsafe.sample.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ListViewModel extends ViewModel implements IFailureHandler, IProgressHandler {
+public class ListViewModel extends AndroidViewModel implements IFailureHandler, IProgressHandler {
 
     private MutableLiveData<Boolean> loading;
     private List<Task> taskList;
@@ -27,11 +29,14 @@ public class ListViewModel extends ViewModel implements IFailureHandler, IProgre
     private MutableLiveData<List<Task>> liveTaskList;
     private ITodoService todoService;
 
-    public ListViewModel() {
+    public ListViewModel(Application application) {
+        super(application);
         taskList = new ArrayList<>();
         loading = new MutableLiveData<>();
         loading.setValue(false);
-        todoService = new SafeTodoService();
+        todoService = new SafeTodoService(application.getApplicationContext());
+        liveTaskList = new MutableLiveData<>();
+        liveTaskList.setValue(taskList);
     }
 
     public TodoList getListInfo() {
@@ -39,10 +44,6 @@ public class ListViewModel extends ViewModel implements IFailureHandler, IProgre
     }
 
     public MutableLiveData<List<Task>> getTaskList() {
-        if (liveTaskList == null) {
-            liveTaskList = new MutableLiveData<>();
-            liveTaskList.setValue(taskList);
-        }
         return liveTaskList;
     }
 
@@ -110,7 +111,7 @@ public class ListViewModel extends ViewModel implements IFailureHandler, IProgre
 
     public void prepareList() {
         try {
-            mdInfo = SafeApi.getInstance().deserializeMdInfo(listInfo.getContent());
+            mdInfo = SafeApi.getInstance(null).deserializeMdInfo(listInfo.getContent());
             fetchListItems();
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,6 +140,8 @@ public class ListViewModel extends ViewModel implements IFailureHandler, IProgre
 
     public void clearList() {
         taskList.clear();
-        liveTaskList.setValue(taskList);
+        if(liveTaskList != null) {
+            liveTaskList.setValue(taskList);
+        }
     }
 }

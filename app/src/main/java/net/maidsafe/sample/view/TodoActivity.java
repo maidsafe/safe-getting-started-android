@@ -9,21 +9,20 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.system.Os;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import net.maidsafe.sample.BuildConfig;
 import net.maidsafe.sample.R;
 import net.maidsafe.sample.model.TodoList;
 import net.maidsafe.sample.services.OnDisconnected;
 import net.maidsafe.sample.viewmodel.ListViewModel;
-import net.maidsafe.sample.viewmodel.MockServices;
 import net.maidsafe.sample.viewmodel.SectionViewModel;
 import net.maidsafe.sample.model.Task;
+
 
 import androidx.navigation.Navigation;
 
@@ -34,18 +33,14 @@ public class TodoActivity extends AppCompatActivity implements AuthFragment.OnFr
     SectionViewModel sectionViewModel;
     ListViewModel listViewModel;
     ProgressBar progressBar;
+    boolean connected;
     View host;
     OnDisconnected onDisconnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
-            Os.setenv("SAFE_MOCK_VAULT_PATH", getApplicationContext().getFilesDir().getPath(), true);
-            Log.d("SAFE_MOCK_VAULT_PATH", getApplicationContext().getFilesDir().getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_auth);
         onDisconnected = () -> {
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(() -> {
@@ -58,13 +53,6 @@ public class TodoActivity extends AppCompatActivity implements AuthFragment.OnFr
         };
         sectionViewModel = ViewModelProviders.of(this).get(SectionViewModel.class);
         listViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
-        Intent intent = getIntent();
-        Uri data = intent.getData();
-        if (data != null) {
-            sectionViewModel.connect(data, onDisconnected);
-
-        }
-        setContentView(R.layout.activity_auth);
         progressBar = findViewById(R.id.progressBar);
         host = findViewById(R.id.my_nav_host_fragment);
 
@@ -75,16 +63,34 @@ public class TodoActivity extends AppCompatActivity implements AuthFragment.OnFr
                 progressBar.setVisibility(View.INVISIBLE);
             }
         };
+        final Observer<Boolean> clientObserver = isConnected -> {
+            connected = isConnected;
+        };
 
-        sectionViewModel.getLoading().observe(this, loadingObserver);
+
         listViewModel.getLoading().observe(this, loadingObserver);
+        sectionViewModel.getLoading().observe(this, loadingObserver);
+        sectionViewModel.getConnected().observe(this, clientObserver);
+
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        if (data != null) {
+            sectionViewModel.connect(data, onDisconnected);
+            Navigation.findNavController(host).navigate(R.id.listHomeFragment);
+        }
     }
 
     public void onFragmentInteraction(View v, Object object) {
+        if(!connected && v.getId() != R.id.authButton) {
+            Toast.makeText(getApplicationContext(), getString(R.string.connection_lost), Toast.LENGTH_LONG).show();
+            return;
+        }
         switch (v.getId()) {
             case R.id.authButton:
                 sectionViewModel.authenticateApplication(getApplicationContext(), onDisconnected);
-                Navigation.findNavController(v).navigate(R.id.listHomeFragment);
+                if(BuildConfig.FLAVOR.equals("mock")) {
+                    Navigation.findNavController(v).navigate(R.id.listHomeFragment);
+                }
                 break;
             case R.id.new_section_add_section:
                 String sectionTitle = (String) object;
@@ -129,7 +135,7 @@ public class TodoActivity extends AppCompatActivity implements AuthFragment.OnFr
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == 3241) {
-            MockServices.simulateDisconnect();
+            sectionViewModel.disconnect();
         }
         return super.onOptionsItemSelected(item);
     }

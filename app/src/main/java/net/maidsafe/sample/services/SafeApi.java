@@ -1,5 +1,7 @@
 package net.maidsafe.sample.services;
 
+import android.content.Context;
+import android.system.Os;
 import android.util.Log;
 
 import net.maidsafe.api.Client;
@@ -27,11 +29,11 @@ public class SafeApi {
     private SafeApi() {
     }
 
-    public static SafeApi getInstance() {
+    public static SafeApi getInstance(Context context) throws Exception{
         if (loaded) {
             return  instance;
         }
-        Client.load();
+        Client.load(context);
         loaded = true;
         return instance;
     }
@@ -39,7 +41,6 @@ public class SafeApi {
     private Client client;
     private String appId;
     private final String listKey = "myTodoLists";
-
 
     public void connect(String response, String appId, OnDisconnected onDisconnected) throws Exception {
         this.appId = appId;
@@ -163,5 +164,4 @@ public class SafeApi {
     public void disconnect() throws Exception {
         client.testSimulateDisconnect().get();
     }
-
 }

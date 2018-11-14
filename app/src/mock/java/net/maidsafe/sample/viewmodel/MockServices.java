@@ -8,8 +8,6 @@ import net.maidsafe.api.Authenticator;
 import net.maidsafe.api.model.AuthIpcRequest;
 import net.maidsafe.api.model.IpcRequest;
 import net.maidsafe.sample.services.AsyncOperation;
-import net.maidsafe.sample.services.IFailureHandler;
-import net.maidsafe.sample.services.IProgressHandler;
 import net.maidsafe.sample.services.Result;
 import net.maidsafe.sample.services.SafeApi;
 
@@ -29,6 +27,8 @@ public class MockServices {
             if (e.getMessage().contains(ACCOUNT_EXISTS_CODE)) {
                 authenticator = Authenticator.login(LOCATOR, PASSWORD).get();
                 Log.d("STAGE:","Logged in to existing account");
+            } else {
+                e.printStackTrace();
             }
         }
 
@@ -45,11 +45,11 @@ public class MockServices {
     }
 
     public static void simulateDisconnect(){
-        SafeApi api = SafeApi.getInstance();
         new AsyncOperation(loading -> {
 
         }).execute(() -> {
             try {
+                SafeApi api = SafeApi.getInstance(null);
                 api.disconnect();
                 return new Result(null);
             } catch (Exception e) {

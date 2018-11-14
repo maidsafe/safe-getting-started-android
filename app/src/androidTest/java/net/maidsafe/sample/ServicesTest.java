@@ -26,21 +26,12 @@ public class ServicesTest {
     private OnDisconnected onDisconnected;
 
     public ServicesTest() {
-        service = new SafeTodoService();
+        service = new SafeTodoService(InstrumentationRegistry.getContext());
+        File mockVaultDir = new File(Os.getenv("SAFE_MOCK_VAULT_PATH"));
+        mockVaultDir.mkdir();
         onDisconnected = () -> {
           Log.d("STAGE:", "Disconnected from the Network");
         };
-    }
-
-    @BeforeClass
-    public static void mockVaultSetup() throws Exception{
-        String mockPath = InstrumentationRegistry.getTargetContext().getExternalCacheDir().getPath();
-        File file = new File(mockPath);
-        if(file.delete()){
-            Log.d("STAGE","MockVault deleted");
-        }
-        file.mkdir();
-        Os.setenv("SAFE_MOCK_VAULT_PATH", mockPath, true);
     }
 
     @Test
@@ -88,7 +79,7 @@ public class ServicesTest {
             Assert.assertEquals(1, taskList.size());
         }
         // fetching existing data
-        ITodoService newConnection = new SafeTodoService();
+        ITodoService newConnection = new SafeTodoService(InstrumentationRegistry.getContext());
         newConnection.connect(authResponse, onDisconnected);
         newConnection.getAppData();
         List<TodoList> list = service.fetchSections();

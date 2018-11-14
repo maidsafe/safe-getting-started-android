@@ -7,7 +7,8 @@
     <string name="auth_button_mock">Mock Authenticate</string>
     <string name="task_placeholder">Some task!</string>
     <string name="disconnected_message">Disconnected from the network</string>
-    <string name="reconnect">Disconnected from the network</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="init_error">Error initializing SAFE services</string>
     <string name="simulate_disconnect">Simulate disconnect</string>
 
     <string name="delete_button">Delete</string>
@@ -28,4 +29,5 @@
     <string name="created_on">Created On:</string>
     <string name="list_title">List Title</string>
     <string name="nothing_here_yet">Nothing here yet!</string>
+    <string name="connection_lost">Network connection lost</string>
 </resources>

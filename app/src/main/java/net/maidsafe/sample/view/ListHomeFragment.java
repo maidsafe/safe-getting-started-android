@@ -13,6 +13,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,6 +115,22 @@ public class ListHomeFragment extends Fragment {
         newSectionText.requestFocus();
         Button addNewSection = dialogView.findViewById(R.id.new_section_add_section);
         Button cancelAddSection = dialogView.findViewById(R.id.new_section_cancel);
+        newSectionText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                addNewSection.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         cancelAddSection.setOnClickListener(view -> dialogBuilder.dismiss());
         addNewSection.setOnClickListener(view -> {
