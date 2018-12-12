@@ -3,12 +3,7 @@ package net.maidsafe.sample.services;
 import android.content.Context;
 import android.net.Uri;
 
-import net.maidsafe.api.Client;
 import net.maidsafe.api.model.App;
-import net.maidsafe.api.model.Request;
-import net.maidsafe.safe_app.AppExchangeInfo;
-import net.maidsafe.safe_app.AuthReq;
-import net.maidsafe.safe_app.ContainerPermissions;
 import net.maidsafe.safe_app.MDataEntry;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.sample.model.Task;
@@ -25,7 +20,6 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
     private MDataInfo appData;
     final App app = new App("net.maidsafe.sample", "Safe TODO Java",
                           "Maidsafe.net", "0.1.0");
-    private static final String AUTH_URL_PREFIX = "safe-auth://";
     private static final int TYPE_TAG = 16290;
     private static final int INT_SIZE = 4;
     private OnDisconnected onDisconnected;
@@ -44,15 +38,8 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
 
     @Override
     public String generateAuthURL() throws Exception {
-        final AppExchangeInfo appExchangeInfo = new AppExchangeInfo(app.getId(), "",
-                app.getName(), app.getVendor());
-        final ContainerPermissions[] permissions = new ContainerPermissions[0];
-        final AuthReq authReq = new AuthReq(appExchangeInfo, true,
-                permissions, permissions.length, 0);
-        final Request request = Client.encodeAuthReq(authReq).get();
-
-        return AUTH_URL_PREFIX + app.getId() + '/' + request.getUri();
-
+        // generate auth URL
+        return null;
     }
 
     @Override

@@ -1,19 +1,14 @@
 package net.maidsafe.sample.services;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.maidsafe.api.Client;
-import net.maidsafe.api.Constants;
 import net.maidsafe.api.Session;
 import net.maidsafe.api.listener.OnDisconnected;
-import net.maidsafe.api.model.AuthResponse;
-import net.maidsafe.api.model.DecodeResult;
 import net.maidsafe.api.model.NativeHandle;
 import net.maidsafe.safe_app.MDataEntry;
 import net.maidsafe.safe_app.MDataInfo;
 import net.maidsafe.safe_app.MDataValue;
-import net.maidsafe.safe_app.PermissionSet;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,16 +38,7 @@ public final class SafeApi {
 
     public void connect(final String response, final String applicationId,
                         final OnDisconnected onDisconnected) throws Exception {
-        this.appId = applicationId;
-        final DecodeResult decodeResult = Session.decodeIpcMessage(response).get();
-        if (decodeResult.getClass().equals(AuthResponse.class)) {
-            final AuthResponse authResponse = (AuthResponse) decodeResult;
-            session = Client.connect(applicationId, authResponse.getAuthGranted()).get();
-            session.setOnDisconnectListener(onDisconnected);
-            Log.i("STAGE:", "Connected to the SAFE Network");
-        } else {
-            throw new java.lang.Exception("Could not connect to the SAFE Network");
-        }
+        // Establish connection with the SAFE Network
     }
 
     public MDataInfo getSectionsFromAppContainer() throws Exception {
@@ -84,41 +70,25 @@ public final class SafeApi {
     }
 
     public List<MDataEntry> getEntries(final MDataInfo mDataInfo) throws Exception {
-        final NativeHandle entryHandle = session.mData.getEntriesHandle(mDataInfo).get();
-        return session.mDataEntries.listEntries(entryHandle).get();
+        // Fetch a list of entries from the network
+        return null;
     }
 
     public void insertPermissions(final MDataInfo mDataInfo) throws Exception {
-        final PermissionSet permissionSet = new PermissionSet();
-        permissionSet.setInsert(true);
-        permissionSet.setUpdate(true);
-        permissionSet.setRead(true);
-        permissionSet.setDelete(true);
-        final NativeHandle permissionHandle = session.mDataPermission.newPermissionHandle().get();
-        session.mDataPermission.insert(permissionHandle, session.crypto.getAppPublicSignKey().get(),
-                permissionSet).get();
-
-        session.mData.put(mDataInfo, permissionHandle, Constants.MD_ENTRIES_EMPTY).get();
-        Log.i("STAGE:", "MData PUT is complete");
+        // Insert permissions and PUT the MData to the network
     }
 
     public void addEntry(final byte[] key, final byte[] value, final MDataInfo mDataInfo) throws Exception {
-        final NativeHandle actionHandle = session.mDataEntryAction.newEntryAction().get();
-        session.mDataEntryAction.insert(actionHandle, key, value).get();
-        session.mData.mutateEntries(mDataInfo, actionHandle).get();
+        // Add an entry and mutate the data
     }
 
     public void deleteEntry(final byte[] key, final long version, final MDataInfo mDataInfo) throws Exception {
-        final NativeHandle actionHandle = session.mDataEntryAction.newEntryAction().get();
-        session.mDataEntryAction.delete(actionHandle, key, version).get();
-        session.mData.mutateEntries(mDataInfo, actionHandle).get();
+       // Delete an entry in the Mutable data
     }
 
     public void updateEntry(final byte[] key, final byte[] newValue, final long version,
                             final MDataInfo mDataInfo) throws Exception {
-        final NativeHandle actionHandle = session.mDataEntryAction.newEntryAction().get();
-        session.mDataEntryAction.update(actionHandle, key, newValue, version).get();
-        session.mData.mutateEntries(mDataInfo, actionHandle).get();
+       // Update existing Mutable data
     }
 
     public long getEntriesLength(final MDataInfo mDataInfo) throws Exception {
@@ -137,7 +107,8 @@ public final class SafeApi {
     }
 
     public MDataInfo newMutableData(final long tagType) throws Exception {
-        return session.mData.getRandomPrivateMData(tagType).get();
+        // Create new mutable data
+        return null;
     }
 
     private void saveMdInfo(final MDataInfo appContainerInfo, final MDataInfo mDataInfo) throws Exception {
