@@ -18,7 +18,7 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
 
     private final SafeApi api;
     private MDataInfo appData;
-    final App app = new App("net.maidsafe.sample", "Safe TODO Java",
+    final App app = new App("net.maidsafe.sample", "Safe ToDo",
                           "Maidsafe.net", "0.1.0");
     private static final int TYPE_TAG = 16290;
     private static final int INT_SIZE = 4;
@@ -63,11 +63,12 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
     public List<TodoList> fetchSections() throws Exception {
         final List<TodoList> sectionsList = new ArrayList<>();
         final List<MDataEntry> entries = api.getEntries(appData);
-        entries.forEach(mDataEntry -> {
-            if (mDataEntry.getValue().getContentLen() != 0) {
-                sectionsList.add(TodoList.getListInfo(mDataEntry.getValue().getContent()));
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).getValue().getContentLen() != 0) {
+                final byte[] decryptedContent = api.decryptEntryValue(appData, entries.get(i));
+                sectionsList.add(TodoList.getListInfo(decryptedContent));
             }
-        });
+        }
         return sectionsList;
     }
 
@@ -91,11 +92,12 @@ public class SafeTodoService implements ITodoService, net.maidsafe.api.listener.
         final MDataInfo mDataInfo = api.deserializeMdInfo(listInfo.getContent());
         final List<Task> taskList = new ArrayList<>();
         final List<MDataEntry> entries = api.getEntries(mDataInfo);
-        entries.forEach(mDataEntry -> {
-            if (mDataEntry.getValue().getContentLen() != 0) {
-                taskList.add(Task.toTask(mDataEntry.getValue().getContent()));
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).getValue().getContentLen() != 0) {
+                final byte[] decryptedData = api.decryptEntryValue(mDataInfo, entries.get(i));
+                taskList.add(Task.toTask(decryptedData));
             }
-        });
+        }
         return taskList;
     }
 
