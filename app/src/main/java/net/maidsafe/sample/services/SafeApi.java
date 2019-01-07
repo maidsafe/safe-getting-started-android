@@ -19,7 +19,7 @@ public final class SafeApi {
     private static boolean loaded;
     private Session session;
     private String appId;
-    private static final String LIST_KEY = "myTodoLists";
+    private static final String LIST_KEY = "myToDoLists";
     private static final String APP_CONTAINER_NAME = "apps/";
     private static final String NO_SUCH_DATA_ERROR_CODE = "-106";
     private static final String DATA_NOT_FOUND_EXCEPTION = "-103";
@@ -43,15 +43,15 @@ public final class SafeApi {
 
     public MDataInfo getSectionsFromAppContainer() throws Exception {
         MDataInfo info;
-
         final MDataInfo appContainerInfo = session.getContainerMDataInfo(APP_CONTAINER_NAME + appId).get();
-        final byte[] key = LIST_KEY.getBytes();
+        final byte[] encryptedKey = session.mData.encryptEntryKey(appContainerInfo, LIST_KEY.getBytes()).get();
         try {
-            final MDataValue mDataValue = session.mData.getValue(appContainerInfo, key).get();
+            final MDataValue mDataValue = session.mData.getValue(appContainerInfo, encryptedKey).get();
             if (mDataValue.getContentLen() <= 0) {
                 info = initAppData(appContainerInfo);
             } else {
-                info = session.mData.deserialise(mDataValue.getContent()).get();
+                final byte[] serializedMdInfo = session.mData.decrypt(appContainerInfo, mDataValue.getContent()).get();
+                info = session.mData.deserialise(serializedMdInfo).get();
             }
         } catch (ExecutionException e) {
             if (e.getMessage().contains(NO_SUCH_DATA_ERROR_CODE)) {
@@ -113,9 +113,16 @@ public final class SafeApi {
 
     private void saveMdInfo(final MDataInfo appContainerInfo, final MDataInfo mDataInfo) throws Exception {
         final byte[] serializedMdInfo = session.mData.serialise(mDataInfo).get();
+        final byte[] encryptedContainerKey = session.mData.encryptEntryKey(appContainerInfo, LIST_KEY.getBytes()).get();
+        final byte[] encryptedMdInfo = session.mData.encryptEntryValue(appContainerInfo, serializedMdInfo).get();
         final NativeHandle containerEntry = session.mDataEntryAction.newEntryAction().get();
-        session.mDataEntryAction.insert(containerEntry, LIST_KEY.getBytes(), serializedMdInfo).get();
+        session.mDataEntryAction.insert(containerEntry, encryptedContainerKey, encryptedMdInfo).get();
         session.mData.mutateEntries(appContainerInfo, containerEntry);
+    }
+
+    public byte[] decryptEntryValue(final MDataInfo mDataInfo, final MDataEntry mDataEntry) throws Exception {
+        // Decrypt data
+        return null;
     }
 
     public byte[] serializeMdInfo(final MDataInfo mDataInfo) throws Exception {
