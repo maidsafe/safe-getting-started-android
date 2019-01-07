@@ -122,7 +122,7 @@ public final class SafeApi {
 
     public byte[] decryptEntryValue(final MDataInfo mDataInfo, final MDataEntry mDataEntry) throws Exception {
         // Decrypt data
-        return null;
+        return new byte[0];
     }
 
     public byte[] serializeMdInfo(final MDataInfo mDataInfo) throws Exception {
