@@ -3,11 +3,11 @@
 |:-:|
 |[![Build Status](https://travis-ci.org/maidsafe/safe-getting-started-android.svg?branch=master)](https://travis-ci.org/maidsafe/safe-getting-started-android)|
 
-Example application to demonstrate the use of the [safe-app-android](https://github.com/maidsafe/safe_app_java/tree/master/safe_app_android) library to build a simple ToDo Android App for the SAFE Network.
+Example application to demonstrate the use of the [safe-app-android](https://github.com/maidsafe/safe_app_java/tree/master/safe-app-android) library to build a simple ToDo Android App for the SAFE Network.
 
 ## Introduction
 
-This example demonstrates use of the [safe-app-android](https://github.com/maidsafe/safe_app_java/tree/master/safe_app_android) library to build a ToDo app for Android on the SAFE Network. There are two modes of the app showcased:
+This example demonstrates use of the [safe-app-android](https://github.com/maidsafe/safe_app_java/tree/master/safe-app-android) library to build a ToDo app for Android on the SAFE Network. There are two modes of the app showcased:
 1. mock - user can build the app to work on a mock simulation of the SAFE Network, created on the users local device,
 2. non-mock - user can build the app to work on the current live alpha-2 or local network.
 

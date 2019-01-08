@@ -2,7 +2,7 @@
     <string name="app_name">SafeTodo Android</string>
     <string name="welcome_msg">Hello there! %1$s</string>
     <string name="welcome_msg_dev">You are running the mock build of the application. The button below will perform mock authentication for you.</string>
-    <string name="welcome_msg_live">You are runnning the non-mock build of the application. Before hitting the Authenticate button please make sure that you have your IP updated, SAFE Authenticator Application installed and you are logged in. You know the drill!</string>
+    <string name="welcome_msg_live">You are running the non-mock build of the application. Before hitting the Authenticate button please make sure that you have your IP updated and the SAFE Authenticator Application installed.</string>
     <string name="auth_button">Authenticate</string>
     <string name="auth_button_mock">Mock Authenticate</string>
     <string name="task_placeholder">Some task!</string>
