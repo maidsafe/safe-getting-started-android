@@ -1,7 +1,7 @@
 # safe-getting-started-android
 |Android|
 |:-:|
-|[![Build Status](https://travis-ci.org/maidsafe/safe-getting-started-android.svg?branch=master)](https://travis-ci.org/maidsafe/safe-getting-started-android)|
+|[![Build Status](https://travis-ci.com/maidsafe/safe-getting-started-android.svg?branch=master)](https://travis-ci.com/maidsafe/safe-getting-started-android)|
 
 Example application to demonstrate the use of the [safe-app-android](https://github.com/maidsafe/safe_app_java/tree/master/safe-app-android) library to build a simple ToDo Android App for the SAFE Network.
 
