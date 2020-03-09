@@ -25,16 +25,16 @@ Android API 24 and above (armeabi-v7a, x86_64 support).
 
 ## Features
 * **Authentication using the [SAFE Authenticator](https://github.com/maidsafe/safe-authenticator-mobile):**
-    
+
     A SAFE application needs to be authorised by the user before being able to connect to the network, this is achieved by sending an authorisation request to the SAFE Authenticator.
 * **Mock & Non-mock flavours:**
-    
+
     User should be able to easily switch between mock and non-mock using the [product flavours feature](https://developer.android.com/studio/build/build-variants#product-flavors) of Android Studio making it convenient to develop, test and build the apps on these environments.
 * **Mutable data operations:**
-    
+
     Perform CRUD operations on Mutable data.
 * **Usage of App's Container:**
-    
+
     Store mutable data information in an app's default container. This can be used to retain and retrieve data used in the application.
 
 ## Screenshots
@@ -53,6 +53,10 @@ Get your developer related questions clarified on [SAFE Dev Forum](https://forum
 
 This SAFE repository is dual-licensed under the Modified BSD ([LICENSE-BSD](LICENSE-BSD) https://opensource.org/licenses/BSD-3-Clause) or the MIT license ([LICENSE-MIT](LICENSE-MIT) https://opensource.org/licenses/MIT) at your option.
 
-## Contribution
+## Contributing
 
-Copyrights in the SAFE Network are retained by their contributors. No copyright assignment is required to contribute to this project.
+Want to contribute? Great :tada:
+
+There are many ways to give back to the project, whether it be writing new code, fixing bugs, or just reporting errors. All forms of contributions are encouraged!
+
+For instructions on how to contribute, see our [Guide to contributing](CONTRIBUTING.md).
